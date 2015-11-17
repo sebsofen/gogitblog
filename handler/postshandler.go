@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"sort"
+	"time"
 )
 
 type ByModDate []os.FileInfo
@@ -20,14 +21,28 @@ type PostsHandler struct {
 	Config *utils.Configuration
 }
 
-type Post struct {
-	Post string
+type PostMetadata struct {
+	Title string
 }
 
-func NewPostsHandler(config *utils.Configuration) (*PostsHandler) {
+type Post struct {
+	Post string
+	Title string
+	Slug string
+	Date time.Time
+	Metadata PostMetadata
+}
+
+func NewPostsHandler(config *utils.Configuration, r *mux.Router) (*PostsHandler) {
+
+
 	posts := &PostsHandler{
 		Config: config,
 	}
+
+	r.HandleFunc("/posts/{postslug}", posts.GetPost)
+	r.HandleFunc("/listposts/{offset}/{limit}", posts.ListPosts)
+	r.HandleFunc("/listposts/count", posts.TotalPosts)
 
 	return posts
 }
@@ -35,25 +50,67 @@ func NewPostsHandler(config *utils.Configuration) (*PostsHandler) {
 func (psts* PostsHandler) ListPosts(w http.ResponseWriter, r *http.Request) {
 	files, _ := ioutil.ReadDir(psts.Config.Gitfolder)
 	sort.Sort(ByModDate(files))
+	postList := make([]*Post, 0, len(files))
+	fmt.Println(len(postList))
+
 	for _, f := range files {
-		fmt.Fprintln(w, string(f.Name()))
+		//filter folders only
+		//TODO IMPLEMENT MORE FILTERS (maybe)
+		if (f.IsDir() && f.Name() != ".git") {
+			metadata_json, _ := ioutil.ReadFile(psts.Config.Gitfolder + "/" + f.Name() + "/metadata.json")
+			metadata := &PostMetadata{}
+			json.Unmarshal(metadata_json, metadata)
+			postList = append(postList, &Post{
+				Date : f.ModTime(),
+				Slug : f.Name(),
+				Metadata: *metadata,
+			})
+		}
 	}
+
+	json, _ := json.Marshal(postList)
+	fmt.Fprintln(w, string(json))
 }
+
+
+
+func (psts* PostsHandler) TotalPosts(w http.ResponseWriter, r *http.Request) {
+	files, _ := ioutil.ReadDir(psts.Config.Gitfolder)
+	counter := 0;
+	for _, f := range files {
+		//filter folders only
+		//TODO IMPLEMENT MORE FILTERS (maybe)
+		if (f.IsDir() && f.Name() != ".git") {
+			counter++
+		}
+	}
+
+	fmt.Fprintln(w,"{'count':" + string(counter) + "}")
+}
+
+
+
+
+
+
 
 
 func (psts* PostsHandler) GetPost(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	postslug := vars["postslug"]
-	dat, err := ioutil.ReadFile(psts.Config.Gitfolder + "/" + postslug + "/Post.md")
-
+	post_md, err := ioutil.ReadFile(psts.Config.Gitfolder + "/" + postslug + "/Post.md")
+	metadata_json, err := ioutil.ReadFile(psts.Config.Gitfolder + "/" + postslug + "/metadata.json")
+	metadata := &PostMetadata{}
+	json.Unmarshal(metadata_json, metadata)
 	if (err != nil){
 		panic(err)
 	}
 
-	fmt.Print(string(dat))
+	fmt.Print(string(post_md))
 
 	post := &Post {
-		Post: string(dat),
+		Post: string(post_md),
+		Metadata: *metadata,
 	}
 
 	//Fprintln will print to webpage

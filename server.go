@@ -10,25 +10,44 @@ import (
 	"bytes"
 	"time"
 	"seb-blog/handler"
+
+	"io/ioutil"
 )
 
 func main() {
 	cnfg := utils.NewConfiguration("config.json")
+	fmt.Println("cnfg" + cnfg.Htmlfiles)
 	ticker := time.NewTicker(time.Second * cnfg.Updateinterval)
-	//update repository automatically
+
+	//update repository automatically, triggered by update interval
 	go UpdateRepo(cnfg.Gitfolder, ticker)
 
-	posts := handler.NewPostsHandler(cnfg)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/posts/{postslug}", posts.GetPost)
-
-	r.HandleFunc("/listposts/{offset}/{limit}", posts.ListPosts)
+	handler.NewPostsHandler(cnfg,r)
 
 
-	//provide static content ;-)
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir(cnfg.Htmlfiles)))
-	http.Handle("/", r)
+	//provide static website content
+	r.PathPrefix("/web").Handler(http.StripPrefix("/web",http.FileServer(http.Dir(cnfg.Htmlfiles + "/"))))
+	//provide more handlers for static content!
+	//for all files in posts folders, provide own fileserver
+	files, _ := ioutil.ReadDir(cnfg.Gitfolder)
+	for _, f := range files {
+		//filter folders only
+		//TODO IMPLEMENT MORE FILTERS (maybe)
+		if (f.IsDir() && f.Name() != ".git") {
+			r.PathPrefix("/" + f.Name() + "/").Handler(
+				http.StripPrefix("/" + f.Name() + "/",
+					http.FileServer(http.Dir(cnfg.Gitfolder + "/" + f.Name() + "/data/"))))
+			fmt.Println(cnfg.Gitfolder + "/" + f.Name() + "/data/")
+		}
+	}
+
+
+
+	//finally, add handler to http listener
+	//set custom profex if desired
+	http.Handle("/*", r)
 
 	log.Fatal(http.ListenAndServe(":" + cnfg.Port, r))
 }

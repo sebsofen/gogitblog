@@ -1,0 +1,39 @@
+<html ng-app="blog">
+  <head>
+    <!-- Angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.1/angular-sanitize.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+
+
+    <script src="js/ui-bootstrap-tpls.js"></script>
+    <script src="https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js"></script>
+
+    <!-- showdown extendions -->
+    <script src="js/showdown-youtube.js"></script>
+
+
+  </head>
+<body>
+
+  <div class="middle" id="header">
+  drgdfgdfg    </div>
+    <div class="middle" id="main" ng-controller="blogController" btf-markdown="post">
+      {{post}}
+  #Markdown directive
+  *It works!*
+
+![youtube video](http://www.youtube.com/watch?v=dQw4w9WgXcQ)
+
+    </div>
+    <div class="middle" id="footer">
+drgdfgdfg    </div>
+
+
+<script src="js/markdown.js"></script>
+  <script src="js/blogmodule.js"></script>
+  <script src="js/blogcontroller.js"></script>
+</bod>
+</html>

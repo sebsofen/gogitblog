@@ -1,7 +1,7 @@
 {
     "port": "8081",
     "gitfolder": "/home/sebastian/blg",
-    "htmlfiles": "/home/sebastian/seb-blog",
-    "updateinterval": 3600
-    
+    "htmlfiles": "/home/sebastian/go/src/seb-blog/webdir/",
+    "updateinterval": 3600,
+    "ignorefolders" : ["None"]
 }

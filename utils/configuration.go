@@ -9,10 +9,11 @@ import (
 
 // Configuration is used to store json information
 type Configuration struct {
-Port          string
-Gitfolder      string
+Port          	string
+Gitfolder      	string
 Updateinterval  time.Duration
-Htmlfiles string
+Htmlfiles 		string
+Ignorefolders 	[]string
 }
 
 //NewConfiguration create configuration from file
