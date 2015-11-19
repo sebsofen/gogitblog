@@ -1,6 +1,6 @@
 package handler
 import (
-	"seb-blog/utils"
+	"github.com/sebsofen/gogitblog/utils"
 	"net/http"
 	"github.com/gorilla/mux"
 	"fmt"

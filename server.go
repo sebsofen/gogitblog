@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"fmt"
 	"log"
-	"seb-blog/utils"
+	"github.com/sebsofen/gogitblog/utils"
 	"os/exec"
 	"bytes"
 	"time"
-	"seb-blog/handler"
+	"github.com/sebsofen/gogitblog/handler"
 
 	"io/ioutil"
 )
