@@ -1,8 +1,9 @@
 app.controller("blogController", function($scope, $location, $http) {
     $scope.post_slug = "John";
     $scope.lastName= "Doe";
-
+    $scope.posts = Array();
     $scope.location = $location;
+    $scope.offset = 0;
     $scope.$watch('location.search()', function() {
         $scope.post_slug = ($location.search()).post_slug;
 
@@ -13,6 +14,21 @@ app.controller("blogController", function($scope, $location, $http) {
                 });
 
     }, true);
+
+
+    $scope.load_more = function() {
+      $http.get('/listposts/' + $scope.offset + '/10').then(
+        function(data) {
+
+          for(i = 0; i < data.data.length; i++){
+            console.log(data.data[i]);
+            $scope.posts.push(data.data[i]);
+            
+          }
+        }
+      );
+      $scope.offset += 10;
+    }
 
 
 });

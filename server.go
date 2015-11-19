@@ -27,8 +27,6 @@ func main() {
 	handler.NewPostsHandler(cnfg,r)
 
 
-	//provide static website content
-	r.PathPrefix("/web").Handler(http.StripPrefix("/web",http.FileServer(http.Dir(cnfg.Htmlfiles + "/"))))
 	//provide more handlers for static content!
 	//for all files in posts folders, provide own fileserver
 	files, _ := ioutil.ReadDir(cnfg.Gitfolder)
@@ -42,6 +40,10 @@ func main() {
 			fmt.Println(cnfg.Gitfolder + "/" + f.Name() + "/data/")
 		}
 	}
+
+	//provide static website content
+	r.PathPrefix("/").Handler(http.StripPrefix("/",http.FileServer(http.Dir(cnfg.Htmlfiles + "/"))))
+
 
 
 

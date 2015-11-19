@@ -1,39 +1,48 @@
 <html ng-app="blog">
-  <head>
-    <!-- Angular -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.1/angular-sanitize.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/style.css">
+
+<head>
+	<!-- Angular -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.1/angular-sanitize.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/style.css">
 
 
-    <script src="js/ui-bootstrap-tpls.js"></script>
-    <script src="https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js"></script>
+	<script src="js/ui-bootstrap-tpls.js"></script>
+	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js"></script>
 
-    <!-- showdown extendions -->
-    <script src="js/showdown-youtube.js"></script>
+	<!-- showdown extendions -->
+	<script src="js/showdown-youtube.js"></script>
 
 
-  </head>
+</head>
+
 <body>
+	<div class="middle" id="header">
+		<div class="middle" id="main">
+			<div class="container" ng-controller="blogController">
+				<div class="post" ng-repeat="post in posts" >
+					<h2>{{post.Metadata.Title}}</h2>
+          <span>{{post.Date}}</span>
+          <div class="content" btf-markdown="post.Post">
 
-  <div class="middle" id="header">
-  drgdfgdfg    </div>
-    <div class="middle" id="main" ng-controller="blogController" btf-markdown="post">
-      {{post}}
-  #Markdown directive
-  *It works!*
-
-![youtube video](http://www.youtube.com/watch?v=dQw4w9WgXcQ)
-
-    </div>
-    <div class="middle" id="footer">
-drgdfgdfg    </div>
+        </div>
+        
+				</div>
 
 
-<script src="js/markdown.js"></script>
-  <script src="js/blogmodule.js"></script>
-  <script src="js/blogcontroller.js"></script>
-</bod>
+			<div id="more" ng-click="load_more();" ng-init="load_more();">Load more ...</div>
+    	</div>
+		</div>
+
+
+	</div>
+
+
+	<script src="js/markdown.js"></script>
+	<script src="js/blogmodule.js"></script>
+	<script src="js/blogcontroller.js"></script>
+	</bod>
+
 </html>

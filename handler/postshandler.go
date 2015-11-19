@@ -9,6 +9,7 @@ import (
 	"os"
 	"sort"
 	"time"
+	"strconv"
 )
 
 type ByModDate []os.FileInfo
@@ -41,7 +42,7 @@ func NewPostsHandler(config *utils.Configuration, r *mux.Router) (*PostsHandler)
 	}
 
 	r.HandleFunc("/posts/{postslug}", posts.GetPost)
-	r.HandleFunc("/listposts/{offset}/{limit}", posts.ListPosts)
+	r.HandleFunc("/listposts/{offset:[0-9]*}/{limit:[0-9]*}", posts.ListPosts)
 	r.HandleFunc("/listposts/count", posts.TotalPosts)
 
 	return posts
@@ -50,21 +51,50 @@ func NewPostsHandler(config *utils.Configuration, r *mux.Router) (*PostsHandler)
 func (psts* PostsHandler) ListPosts(w http.ResponseWriter, r *http.Request) {
 	files, _ := ioutil.ReadDir(psts.Config.Gitfolder)
 	sort.Sort(ByModDate(files))
-	postList := make([]*Post, 0, len(files))
-	fmt.Println(len(postList))
+	vars := mux.Vars(r)
+
+	offset, _ := strconv.Atoi(vars["offset"])
+	if(offset < 0){
+		offset = 0
+	}
+
+	limit, _ := strconv.Atoi(vars["limit"])
+	if limit > 10 {
+		limit = 10
+	}
+
+	postList := make([]*Post, 0, limit)
+
 
 	for _, f := range files {
+
 		//filter folders only
 		//TODO IMPLEMENT MORE FILTERS (maybe)
-		if (f.IsDir() && f.Name() != ".git") {
-			metadata_json, _ := ioutil.ReadFile(psts.Config.Gitfolder + "/" + f.Name() + "/metadata.json")
-			metadata := &PostMetadata{}
-			json.Unmarshal(metadata_json, metadata)
-			postList = append(postList, &Post{
-				Date : f.ModTime(),
-				Slug : f.Name(),
-				Metadata: *metadata,
-			})
+		if (f.IsDir() && f.Name() != ".git" ) {
+			if(offset == 0 && len(postList) < limit) {
+				metadata_json, _ := ioutil.ReadFile(psts.Config.Gitfolder + "/" + f.Name() + "/metadata.json")
+				metadata := &PostMetadata{}
+				json.Unmarshal(metadata_json, metadata)
+
+				post_md_b, err := ioutil.ReadFile(psts.Config.Gitfolder + "/" + f.Name() + "/Post.md")
+				post_md := ""
+				if(err == nil){
+					post_md = string(post_md_b)
+				}
+				fmt.Println(post_md)
+
+
+
+
+				postList = append(postList, &Post{
+					Post : post_md,
+					Date : f.ModTime(),
+					Slug : f.Name(),
+					Metadata: *metadata,
+				})
+			}else{
+				offset -= 1;
+			}
 		}
 	}
 
