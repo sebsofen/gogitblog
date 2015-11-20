@@ -40,3 +40,7 @@ div.middle {
    max-width: 500px;
    height: auto;
 }
+
+.content {
+  display:block;
+}

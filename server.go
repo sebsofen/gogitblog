@@ -17,11 +17,12 @@ import (
 func main() {
 	cnfg := utils.NewConfiguration("config.json")
 	fmt.Println("cnfg" + cnfg.Htmlfiles)
-	ticker := time.NewTicker(time.Second * cnfg.Updateinterval)
 
-	//update repository automatically, triggered by update interval
-	go UpdateRepo(cnfg.Gitfolder, ticker)
-
+	if cnfg.Updateinterval < 0  {
+		ticker := time.NewTicker(time.Second * cnfg.Updateinterval)
+		//update repository automatically, triggered by update interval
+		go UpdateRepo(cnfg.Gitfolder, ticker)
+	}
 
 	r := mux.NewRouter()
 	handler.NewPostsHandler(cnfg,r)
