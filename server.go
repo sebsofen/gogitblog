@@ -18,7 +18,7 @@ func main() {
 	cnfg := utils.NewConfiguration("config.json")
 	fmt.Println("cnfg" + cnfg.Htmlfiles)
 
-	if cnfg.Updateinterval < 0  {
+	if cnfg.Updateinterval > 0  {
 		ticker := time.NewTicker(time.Second * cnfg.Updateinterval)
 		//update repository automatically, triggered by update interval
 		go UpdateRepo(cnfg.Gitfolder, ticker)
