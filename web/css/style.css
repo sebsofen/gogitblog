@@ -1,0 +1,46 @@
+body {
+  background-color: #333;
+
+}
+
+div#main {
+
+  background-color:#EEE;
+  min-height: 250px;
+}
+
+div#footer {
+  background-color:#999;
+  padding: 20px;
+}
+
+div#header {
+  background-color:#aaa;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+div.middle {
+  min-width: 500px;
+  max-width:800px;
+
+  padding-left: 15px;
+  padding-right: 15px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.post {
+  
+}
+
+.post img {
+  width: auto;
+   max-width: 500px;
+   height: auto;
+}
+
+.content {
+  display:block;
+}
